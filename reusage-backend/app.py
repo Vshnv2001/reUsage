@@ -19,7 +19,7 @@ def upload_file():
         return 'No selected file', 400
 
     if file:
-        df = pd.read_csv(file, encoding='latin-1')
+        df = pd.read_csv(file)
         row_count = len(df)
         industries = get_industries(df).split(',')
         if len(industries) < len(df):
