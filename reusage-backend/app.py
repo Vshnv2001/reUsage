@@ -1,5 +1,6 @@
 from flask import Flask, request
 import pandas as pd
+from evaluator_functions import get_industries
 
 app = Flask(__name__)
 
@@ -15,7 +16,8 @@ def upload_file():
     if file:
         df = pd.read_csv(file)
         row_count = len(df)
-        return {'rowCount': row_count}
+        industries = get_industries(df).split(',')
+        return {'rowCount': row_count, 'industries': industries}
 
 if __name__ == '__main__':
     app.run(debug=True)
