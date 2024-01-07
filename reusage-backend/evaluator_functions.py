@@ -33,10 +33,10 @@ def get_industries(df):
     problem_statements = ""
     i = 0
     for problem in df[problem_column]:
-        if i ==2:
-            break
-        else:
-            i += 1
+        # if i ==2:
+        #     break
+        # else:
+        #     i += 1
         problem_statements += problem + "\n"
     
     message = client.beta.threads.messages.create(
