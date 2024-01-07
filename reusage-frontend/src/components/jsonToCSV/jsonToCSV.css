@@ -1,0 +1,22 @@
+/* src/components/JSONToCSVTable/JSONToCSVTable.css */
+
+.csv-table-container {
+  overflow: auto;
+  max-height: 400px;
+}
+
+.csv-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.csv-table th,
+.csv-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.csv-table th {
+  background-color: #f2f2f2;
+}

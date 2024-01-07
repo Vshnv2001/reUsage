@@ -1,8 +1,11 @@
 from flask import Flask, request
 import pandas as pd
 from evaluator_functions import get_industries
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r'/*': {'origins': '*'}})
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -18,6 +21,7 @@ def upload_file():
         row_count = len(df)
         industries = get_industries(df).split(',')
         return {'rowCount': row_count, 'industries': industries}
+
 
 if __name__ == '__main__':
     app.run(debug=True)

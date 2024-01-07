@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function FileUpload() {
+function FileUpload({ setIndustryValues, setSteps }) {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [rowCount, setRowCount] = useState(null);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -28,7 +27,9 @@ function FileUpload() {
           },
         }
       );
-      setRowCount(response.data.rowCount);
+
+      setIndustryValues(response.data.industryValues);
+      setSteps(1);
     } catch (error) {
       console.error("Error uploading file:", error);
     }
@@ -42,7 +43,6 @@ function FileUpload() {
         <button type="submit">Upload</button>
       </form>
       {loading && <p>Loading...</p>}
-      {rowCount && <p>Number of Rows: {rowCount}</p>}
     </div>
   );
 }
