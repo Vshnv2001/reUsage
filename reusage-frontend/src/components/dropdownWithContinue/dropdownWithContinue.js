@@ -38,7 +38,7 @@ const ContinueButton = styled(Button)({
   marginTop: "10px",
 });
 
-function DropdownWithContinue({ data }) {
+function DropdownWithContinue({ data, setIndustryFilteredData, setSteps }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -57,7 +57,7 @@ function DropdownWithContinue({ data }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ selectedOptions }),
+        body: JSON.stringify({ industries: selectedOptions }),
       });
 
       if (!response.ok) {
@@ -65,8 +65,9 @@ function DropdownWithContinue({ data }) {
       }
 
       const data = await response.json();
+      setIndustryFilteredData(data);
       setLoading(false);
-      setSelectedOptions(2);
+      setSteps(2);
       console.log("Success:", data);
     } catch (error) {
       console.error("Error:", error);
