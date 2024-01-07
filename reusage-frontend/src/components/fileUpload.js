@@ -28,6 +28,7 @@ function FileUpload() {
           },
         }
       );
+
       setRowCount(response.data.rowCount);
     } catch (error) {
       console.error("Error uploading file:", error);

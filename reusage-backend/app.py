@@ -1,7 +1,10 @@
 from flask import Flask, request
 import pandas as pd
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r'/*': {'origins': '*'}})
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -15,7 +18,9 @@ def upload_file():
     if file:
         df = pd.read_csv(file)
         row_count = len(df)
+        print(row_count)
         return {'rowCount': row_count}
+
 
 if __name__ == '__main__':
     app.run(debug=True)
