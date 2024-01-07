@@ -9,33 +9,40 @@ import Paper from "@mui/material/Paper";
 import "./jsonToCSV.css";
 
 function JsonToCSV({ jsonData }) {
-  // Extract column headers from the first object in the array
   const columnHeaders = jsonData.length > 0 ? Object.keys(jsonData[0]) : [];
 
   return (
-    <div className="csv-table-container">
-      <p>Number of Records: {jsonData.length}</p>{" "}
-      {/* Display the number of records */}
-      <TableContainer component={Paper}>
-        <Table className="csv-table" aria-label="csv table">
-          <TableHead>
-            <TableRow>
-              {columnHeaders.map((header, index) => (
-                <TableCell key={index}>{header}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {jsonData.map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
-                {columnHeaders.map((header, index) => (
-                  <TableCell key={index}>{row[header]}</TableCell>
+    <div className="container">
+      <h1 style={{ textAlign: "center" }}>Preview your filtered data</h1>
+      <p className="records-count">{jsonData.length} rows</p>
+      <div className="csv-table-container">
+        <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+          <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+            {" "}
+            {/* Scrollable container */}
+            <Table className="csv-table" aria-label="csv table" stickyHeader>
+              <TableHead>
+                <TableRow>
+                  {columnHeaders.map((header, index) => (
+                    <TableCell key={index} style={{ fontWeight: "bold" }}>
+                      {header}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {jsonData.map((row, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    {columnHeaders.map((header, index) => (
+                      <TableCell key={index}>{row[header]}</TableCell>
+                    ))}
+                  </TableRow>
                 ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              </TableBody>
+            </Table>
+          </div>
+        </TableContainer>
+      </div>
     </div>
   );
 }
