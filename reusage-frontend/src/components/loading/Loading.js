@@ -17,6 +17,11 @@ function Loading({ initialText }) {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
+      if (currentText === "Finalizing") {
+        clearInterval(intervalId); // Stop changing text when it reaches "Finalizing"
+        return;
+      }
+
       setTextIndex((prevIndex) => {
         const nextIndex = (prevIndex + 1) % transitionTexts.length;
         setCurrentText(transitionTexts[nextIndex]);
@@ -25,7 +30,7 @@ function Loading({ initialText }) {
     }, 2000); // Change text every 2 seconds
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [currentText]);
 
   return (
     <Box
