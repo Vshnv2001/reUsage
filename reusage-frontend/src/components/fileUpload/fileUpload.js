@@ -81,8 +81,8 @@ function FileUpload({ setIndustryValues, setSteps }) {
           },
         }
       );
-
-      setIndustryValues(response.data.industryValues);
+      console.log(response.data);
+      setIndustryValues(response.data.industries);
       setSteps(1);
     } catch (error) {
       console.error("Error uploading file:", error);

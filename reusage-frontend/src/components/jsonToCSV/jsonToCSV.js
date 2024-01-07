@@ -1,31 +1,41 @@
 import React from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import "./jsonToCSV.css";
 
 function JsonToCSV({ jsonData }) {
+  // Extract column headers from the first object in the array
   const columnHeaders = jsonData.length > 0 ? Object.keys(jsonData[0]) : [];
 
   return (
     <div className="csv-table-container">
-      <table className="csv-table">
-        <thead>
-          <tr>
-            <th>#</th> {/* Row number header */}
-            {columnHeaders.map((header, index) => (
-              <th key={index}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {jsonData.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              <td>{rowIndex + 1}</td> {/* Row number */}
+      <p>Number of Records: {jsonData.length}</p>{" "}
+      {/* Display the number of records */}
+      <TableContainer component={Paper}>
+        <Table className="csv-table" aria-label="csv table">
+          <TableHead>
+            <TableRow>
               {columnHeaders.map((header, index) => (
-                <td key={index}>{row[header]}</td>
+                <TableCell key={index}>{header}</TableCell>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {jsonData.map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {columnHeaders.map((header, index) => (
+                  <TableCell key={index}>{row[header]}</TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 }

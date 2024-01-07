@@ -8,6 +8,7 @@ import Checkbox from "@mui/material/Checkbox";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { styled } from "@mui/material/styles";
 import { Button } from "@mui/material";
+import Loading from "../loading/Loading";
 import "./dropdownWithContinue.css"; // Import the CSS file
 
 const ITEM_HEIGHT = 48;
@@ -39,6 +40,7 @@ const ContinueButton = styled(Button)({
 
 function DropdownWithContinue({ data }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event) => {
     const {
@@ -49,6 +51,7 @@ function DropdownWithContinue({ data }) {
 
   const handleContinue = async () => {
     try {
+      setLoading(true);
       const response = await fetch("http://localhost:5000/industry_selection", {
         method: "POST",
         headers: {
@@ -62,13 +65,17 @@ function DropdownWithContinue({ data }) {
       }
 
       const data = await response.json();
+      setLoading(false);
+      setSelectedOptions(2);
       console.log("Success:", data);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  return (
+  return loading ? (
+    <Loading initialText={"Filtering your selections"} />
+  ) : (
     <div className="container">
       <h1 style={{ textAlign: "center" }}>
         Which industry are you interested in?

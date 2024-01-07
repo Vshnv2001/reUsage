@@ -29,20 +29,14 @@ def upload_file():
             df = df[:len(industries)]
         df['industry'] = industries
         dfWrapper.set_df(df)
-        return {'rowCount': row_count, 'industries': industries}
-    
-    
-@app.route('/industry_selection', methods=['GET'])
-def add_metrics():
-    industries = request.args.get('industries')
-    industries = industries.split(',')
-    df = dfWrapper.get_df()
-    df = df[df['industry'].isin(industries)]
-    selected_columns = ['problem', 'solution']
-    selected_df = df[selected_columns]
-    json_output = {'sampleIndustryValues': selected_df.to_dict(orient='records')}
-    return json_output
-        
+        print(len(industries))
+
+        # Remove empty strings from industries
+        industries = [industry for industry in industries if industry != '']
+
+        print(list(set(industries)))
+
+        return {'rowCount': row_count, 'industries': list(set(industries))}
 
 
 if __name__ == '__main__':
