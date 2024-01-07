@@ -29,7 +29,14 @@ def upload_file():
             df = df[:len(industries)]
         df['industry'] = industries
         dfWrapper.set_df(df)
-        return {'rowCount': row_count, 'industries': industries}
+        print(len(industries))
+
+        # Remove empty strings from industries
+        industries = [industry for industry in industries if industry != '']
+
+        print(list(set(industries)))
+
+        return {'rowCount': row_count, 'industries': list(set(industries))}
 
 
 if __name__ == '__main__':

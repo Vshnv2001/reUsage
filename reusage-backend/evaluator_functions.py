@@ -13,6 +13,7 @@ api_key = os.getenv("OPENAI_API_KEY")
 # Create an instance of the OpenAI client
 client = openai.OpenAI(api_key=api_key)
 
+
 def get_industries(df):
     # Iterate through each problem statement and generate industry prediction
     # df = df.head(20)
@@ -37,8 +38,13 @@ def get_industries(df):
         #     break
         # else:
         #     i += 1
-        problem_statements += problem + "\n"
-    
+        try:
+            print(problem)
+            problem_statements += problem + "\n"
+        except TypeError:
+            # This means that we have reached EOF and break out of for loop
+            break
+
     message = client.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
@@ -53,7 +59,8 @@ def get_industries(df):
     # If run is 'completed', get messages and print
     while True:
         # Retrieve the run status
-        run_status = client.beta.threads.runs.retrieve(thread_id=thread.id,run_id=run.id)
+        run_status = client.beta.threads.runs.retrieve(
+            thread_id=thread.id, run_id=run.id)
         print(run_status.model_dump_json(indent=4))
         time.sleep(10)
         if run_status.status == 'completed':
@@ -62,10 +69,9 @@ def get_industries(df):
             # print(messages)
             break
         else:
-            ### sleep again
+            # sleep again
             time.sleep(2)
     return messages.data[0].content[0].text.value
-
 
 
 def wait_on_run(run, thread):
@@ -76,8 +82,3 @@ def wait_on_run(run, thread):
         )
         time.sleep(0.5)
     return run
-
-
-
-earthhack_df = pd.read_csv('ai_earthhack_dataset.csv', encoding='latin1')
-get_industries(earthhack_df)
