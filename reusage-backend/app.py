@@ -22,6 +22,7 @@ def upload_file():
         df = pd.read_csv(file, encoding='latin-1')
         row_count = len(df)
         industries = get_industries(df).split(',')
+        industries = industries.split('\n')
         if len(industries) < len(df):
             extension = ["" for i in range(len(df) - len(industries))]
             industries += extension
