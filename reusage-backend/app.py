@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import pandas as pd
-from evaluator_functions import get_industries
+from evaluator_functions import get_industries, get_metric
 from DfWrapper import DfWrapper
 from flask_cors import CORS
 
@@ -44,8 +44,22 @@ def add_metrics():
     industries = data.get('industries')
     df = dfWrapper.get_df()
     df = df[df['industry'].isin(industries)]
-    selected_columns = ['problem', 'solution']
+    selected_columns = ['problem', 'solution', 'relevance', 'specificity']
     selected_df = df[selected_columns]
+    relevances = get_metric(df, 'relevance')
+    specificities = get_metric(df, 'specificity')
+    relevances = relevances.split(',')
+    specificities = specificities.split(',')
+    if len(relevances) < len(df):
+        extension = ["" for i in range(len(df) - len(relevances))]
+        relevances += extension
+    elif len(relevances) > len(df):
+        df = df[:len(relevances)]
+    if len(specificities) < len(df):
+        extension = ["" for i in range(len(df) - len(specificities))]
+        specificities += extension
+    elif len(specificities) > len(df):
+        df = df[:len(specificities)]
     json_output = {
         'filteredIndustryProblems': selected_df.to_dict(orient='records')}
     return jsonify(json_output)
