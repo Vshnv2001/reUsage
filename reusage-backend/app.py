@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import pandas as pd
 from evaluator_functions import get_industries, get_metric
 from DfWrapper import DfWrapper
@@ -30,13 +30,19 @@ def upload_file():
             df = df[:len(industries)]
         df['industry'] = industries
         dfWrapper.set_df(df)
-        return {'rowCount': row_count, 'industries': industries}
-    
-    
-@app.route('/industry_selection', methods=['GET'])
+
+        # Remove empty strings from industries
+        industries = [industry for industry in industries if industry != '']
+
+        return {'rowCount': row_count, 'industries': list(set(industries))}
+
+
+@app.route('/industry_selection', methods=['POST'])
 def add_metrics():
-    industries = request.args.get('industries')
-    industries = industries.split(',')
+    print("/industry_selection called!")
+    # Access data from request body
+    data = request.get_json()
+    industries = data.get('industries')
     df = dfWrapper.get_df()
     df = df[df['industry'].isin(industries)]
     selected_columns = ['problem', 'solution', 'relevance', 'specificity']
@@ -55,11 +61,10 @@ def add_metrics():
         specificities += extension
     elif len(specificities) > len(df):
         df = df[:len(specificities)]
-    json_output = {'sampleIndustryValues': selected_df.to_dict(orient='records')}
-    return json_output
-        
+    json_output = {
+        'sampleIndustryValues': selected_df.to_dict(orient='records')}
+    return jsonify(json_output)
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-

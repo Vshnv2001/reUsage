@@ -6,7 +6,7 @@ import JsonToCSV from "./components/jsonToCSV/jsonToCSV";
 import CustomButton from "./components/CustomButton/CustomButton";
 
 function App() {
-  const [steps, setSteps] = useState(2);
+  const [steps, setSteps] = useState(0);
   const [industryValues, setIndustryValues] = useState([]);
   const [industryFilteredData, setIndustryFilteredData] = useState([]);
   const [relevantData, setRelevantData] = useState([]); // Data filtered by relevance
@@ -158,7 +158,7 @@ function App() {
     console.log(steps);
     return (
       <div style={{ display: "flex", "flex-direction": "column" }}>
-        <JsonToCSV jsonData={sampleIndustryValues} />
+        <JsonToCSV jsonData={industryFilteredData} />
         <CustomButton
           text="Get Relevance Score and Reasoning"
           handleSubmit={() => console.log("Button clicked")}

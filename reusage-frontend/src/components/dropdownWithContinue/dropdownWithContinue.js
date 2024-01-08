@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import Loading from "../loading/Loading";
 import "./dropdownWithContinue.css"; // Import the CSS file
+import axios from "axios"; // Import axios
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -50,27 +51,23 @@ function DropdownWithContinue({ data, setIndustryFilteredData, setSteps }) {
   };
 
   const handleContinue = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await fetch("http://localhost:5000/industry_selection", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ industries: selectedOptions }),
-      });
+      const response = await axios.post(
+        "http://localhost:5000/industry_selection",
+        {
+          industries: selectedOptions,
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = response.data;
       setIndustryFilteredData(data);
-      setLoading(false);
       setSteps(2);
       console.log("Success:", data);
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
