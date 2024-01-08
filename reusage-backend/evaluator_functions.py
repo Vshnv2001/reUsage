@@ -21,13 +21,20 @@ def get_industries(df):
     problem_column = 'problem'
     industry_column = 'industry'
     i = 0
-    # assistant = client.beta.assistants.create(
-    #     name="Industry Prediction Assistant",
-    #     instructions="You are an industry prediction expert. Given a list of problem statements, give a list of the industries that they belong to or try to solve. Give only the industry and nothing else - not even the word 'industry' - try to limit it to two words at max. Return a list of the industries separated by commas.",
-    #     tools=[{"type": "retrieval"}],
-    #     model="gpt-4-1106-preview"
-    # )
-    assistant_id = "asst_GojIGPi4W41fBrf8R8u1AzsV"
+    file_path = 'assistant_instructions.txt'
+    file_content = ""
+
+    # Open the file in read mode
+    with open(file_path, 'r') as file:
+        # Read the entire content of the file into a string variable
+        file_content = file.read()
+    assistant = client.beta.assistants.create(
+        name="Industry Prediction Assistant",
+        instructions=file_content,
+        tools=[{"type": "retrieval"}],
+        model="gpt-3.5-turbo-1106"
+    )
+    assistant_id = assistant.id
     thread = client.beta.threads.create()
     thread_id = thread.id
     print("Thread ID: " + thread_id)
@@ -74,6 +81,57 @@ def get_industries(df):
     return messages.data[0].content[0].text.value
 
 
+def get_metric(df, metric):
+    # file_path = 'assistant_instructions.txt'
+    # file_content = ""
+
+    # # Open the file in read mode
+    # with open(file_path, 'r') as file:
+    #     # Read the entire content of the file into a string variable
+    #     file_content = file.read()
+    # assistant = client.beta.assistants.create(
+    #     name="Industry Prediction Assistant",
+    #     instructions=file_content,
+    #     tools=[{"type": "retrieval"}],
+    #     model="gpt-3.5-turbo-1106"
+    # )
+    assistant_id = "asst_n2ZJaW7Eh3IfAYKtinp9uUs3"
+    thread = client.beta.threads.create()
+    thread_id = thread.id
+    problem_solution_pair = ""
+    for index, row in df.iterrows():
+        problem_solution_pair += row['problem'] + "\n" + row['solution'] + "\n\n"
+    message = client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="user",
+        content= "Find the " + metric + " of these problem statements and give it a score out of 10: \n" + problem_solution_pair,
+    )
+    
+    run = client.beta.threads.runs.create(
+        thread_id=thread_id,
+        assistant_id=assistant_id,
+        instructions= f"Give me the {metric} for the problem-solution pairs below (no need for any files) as a comma-separated string. Don't give me anything else, just the score out of 10" + problem_solution_pair
+    )
+
+    # If run is 'completed', get messages and print
+    while True:
+        # Retrieve the run status
+        run_status = client.beta.threads.runs.retrieve(
+            thread_id=thread.id, run_id=run.id)
+        print(run_status.model_dump_json(indent=4))
+        time.sleep(10)
+        if run_status.status == 'completed':
+            messages = client.beta.threads.messages.list(thread_id=thread.id)
+            # print("message:")
+            # print(messages)
+            break
+        else:
+            # sleep again
+            time.sleep(2)
+    return messages.data[0].content[0].text.value
+    
+    
+
 def wait_on_run(run, thread):
     while run.status == "queued" or run.status == "in_progress":
         run = client.beta.threads.runs.retrieve(
@@ -82,3 +140,8 @@ def wait_on_run(run, thread):
         )
         time.sleep(0.5)
     return run
+
+
+df = pd.read_csv('ai_earthhack_dataset.csv', encoding='latin-1')
+df = df.head(4)
+print(get_metric(df, 'specificity'))
