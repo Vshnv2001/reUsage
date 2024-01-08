@@ -159,10 +159,6 @@ function App() {
     return (
       <div style={{ display: "flex", "flex-direction": "column" }}>
         <JsonToCSV jsonData={industryFilteredData} />
-        <CustomButton
-          text="Get Relevance Score and Reasoning"
-          handleSubmit={() => console.log("Button clicked")}
-        />
       </div>
     );
   }

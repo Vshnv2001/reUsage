@@ -13,7 +13,7 @@ function JsonToCSV({ jsonData }) {
 
   return (
     <div className="container">
-      <h1 style={{ textAlign: "center" }}>Preview your filtered data</h1>
+      <h1 style={{ textAlign: "center" }}>Final Data and Scores</h1>
       <p className="records-count">{jsonData.length} rows</p>
       <div className="csv-table-container">
         <TableContainer component={Paper} style={{ overflowX: "auto" }}>

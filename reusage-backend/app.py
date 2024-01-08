@@ -22,7 +22,6 @@ def upload_file():
         df = pd.read_csv(file, encoding='latin-1')
         row_count = len(df)
         industries = get_industries(df).split(',')
-        industries = industries.split('\n')
         if len(industries) < len(df):
             extension = ["" for i in range(len(df) - len(industries))]
             industries += extension
@@ -48,7 +47,7 @@ def add_metrics():
     selected_columns = ['problem', 'solution']
     selected_df = df[selected_columns]
     json_output = {
-        'sampleIndustryValues': selected_df.to_dict(orient='records')}
+        'filteredIndustryProblems': selected_df.to_dict(orient='records')}
     return jsonify(json_output)
 
 
