@@ -25,14 +25,14 @@ def get_industries(df):
     file_content = ""
 
     # Open the file in read mode
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         # Read the entire content of the file into a string variable
         file_content = file.read()
     assistant = client.beta.assistants.create(
         name="Industry Prediction Assistant",
         instructions=file_content,
         tools=[{"type": "retrieval"}],
-        model="gpt-3.5-turbo-1106"
+        model="gpt-4-1106-preview"
     )
     assistant_id = assistant.id
     thread = client.beta.threads.create()
@@ -100,17 +100,19 @@ def get_metric(df, metric):
     thread_id = thread.id
     problem_solution_pair = ""
     for index, row in df.iterrows():
-        problem_solution_pair += row['problem'] + "\n" + row['solution'] + "\n\n"
+        problem_solution_pair += row['problem'] + \
+            "\n" + row['solution'] + "\n\n"
     message = client.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
-        content= "Find the " + metric + " of these problem statements and give it a score out of 10: \n" + problem_solution_pair,
+        content="Find the " + metric +
+        " of these problem statements and give it a score out of 10: \n" + problem_solution_pair,
     )
-    
+
     run = client.beta.threads.runs.create(
         thread_id=thread_id,
         assistant_id=assistant_id,
-        instructions= f"Give me the {metric} for the problem-solution pairs below (no need for any files) as a comma-separated string. Don't give me anything else, just the score out of 10" + problem_solution_pair
+        instructions=f"Give me the {metric} for the problem-solution pairs below (no need for any files) as a comma-separated string. Don't give me anything else, just the score out of 10" + problem_solution_pair
     )
 
     # If run is 'completed', get messages and print
@@ -129,8 +131,7 @@ def get_metric(df, metric):
             # sleep again
             time.sleep(2)
     return messages.data[0].content[0].text.value
-    
-    
+
 
 def wait_on_run(run, thread):
     while run.status == "queued" or run.status == "in_progress":
@@ -140,8 +141,3 @@ def wait_on_run(run, thread):
         )
         time.sleep(0.5)
     return run
-
-
-df = pd.read_csv('ai_earthhack_dataset.csv', encoding='latin-1')
-df = df.head(4)
-print(get_metric(df, 'specificity'))

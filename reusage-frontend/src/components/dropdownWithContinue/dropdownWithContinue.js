@@ -61,6 +61,7 @@ function DropdownWithContinue({ data, setIndustryFilteredData, setSteps }) {
       );
 
       const data = response.data;
+      console.log({ data });
       setIndustryFilteredData(data.filteredIndustryProblems);
       setSteps(2);
       console.log("Success:", data);

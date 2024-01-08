@@ -19,7 +19,7 @@ def upload_file():
         return 'No selected file', 400
 
     if file:
-        df = pd.read_csv(file, encoding='latin-1')
+        df = pd.read_csv(file, encoding='utf-8')
         row_count = len(df)
         industries = get_industries(df).split(',')
         if len(industries) < len(df):
@@ -44,12 +44,14 @@ def add_metrics():
     industries = data.get('industries')
     df = dfWrapper.get_df()
     df = df[df['industry'].isin(industries)]
-    selected_columns = ['problem', 'solution', 'relevance', 'specificity']
-    selected_df = df[selected_columns]
     relevances = get_metric(df, 'relevance')
     specificities = get_metric(df, 'specificity')
     relevances = relevances.split(',')
     specificities = specificities.split(',')
+    df['relevance'] = relevances
+    df['specificity'] = specificities
+    selected_columns = ['problem', 'solution', 'relevance', 'specificity']
+    selected_df = df[selected_columns]
     if len(relevances) < len(df):
         extension = ["" for i in range(len(df) - len(relevances))]
         relevances += extension
